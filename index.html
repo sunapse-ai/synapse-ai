@@ -19,74 +19,122 @@
       color: white;
       min-height: 100vh;
       display: flex;
-      align-items: center;
       justify-content: center;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
     .container {
-      text-align: center;
-      padding: 40px 20px;
+      width: 100%;
       max-width: 900px;
+      padding: 70px 20px;
+      text-align: center;
     }
 
     .logo {
-      width: 110px;
-      height: 110px;
-      margin: 0 auto 30px;
-      border-radius: 30px;
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 25px;
+      border-radius: 26px;
       background: linear-gradient(135deg, #7B2CFF, #2962FF, #00E6FF);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 58px;
+      font-size: 48px;
       font-weight: bold;
-      box-shadow: 0 0 60px rgba(41, 98, 255, 0.35);
+      box-shadow: 0 0 55px rgba(41, 98, 255, 0.35);
     }
 
     h1 {
-      font-size: 52px;
+      font-size: 46px;
       letter-spacing: 4px;
-      margin-bottom: 18px;
+      margin-bottom: 15px;
       background: linear-gradient(90deg, #7B2CFF, #2962FF, #00E6FF);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .slogan {
-      font-size: 22px;
       color: #A1A7B3;
-      margin-bottom: 40px;
+      font-size: 20px;
+      margin-bottom: 45px;
     }
 
-    .description {
-      font-size: 17px;
+    .agent-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: left;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+
+    .agent-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .agent-description {
       color: #A1A7B3;
-      line-height: 1.7;
-      max-width: 650px;
-      margin: 0 auto 40px;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      resize: vertical;
+      background: #151923;
+      border: 1px solid #2A3040;
+      border-radius: 12px;
+      padding: 16px;
+      color: white;
+      font-size: 16px;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #2962FF;
+    }
+
+    textarea::placeholder {
+      color: #6F7685;
     }
 
     .button {
-      display: inline-block;
-      padding: 16px 32px;
+      width: 100%;
+      margin-top: 18px;
+      padding: 16px;
+      border: none;
       border-radius: 12px;
-      text-decoration: none;
       color: white;
       font-size: 17px;
       font-weight: bold;
+      cursor: pointer;
       background: linear-gradient(90deg, #7B2CFF, #2962FF);
-      box-shadow: 0 10px 35px rgba(41, 98, 255, 0.3);
+      box-shadow: 0 10px 35px rgba(41, 98, 255, 0.25);
     }
 
-    .button:hover {
-      transform: translateY(-2px);
+    .button:active {
+      transform: scale(0.99);
     }
 
-    .agents {
-      margin-top: 55px;
-      color: #6f7685;
-      font-size: 14px;
+    .result {
+      display: none;
+      margin-top: 25px;
+      padding: 20px;
+      background: #151923;
+      border-radius: 12px;
+      border: 1px solid #2A3040;
+      color: #A1A7B3;
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 35px;
+      color: #6F7685;
+      font-size: 13px;
     }
   </style>
 </head>
@@ -103,20 +151,54 @@
       One platform. Infinite AI agents.
     </div>
 
-    <div class="description">
-      Discover a new generation of AI agents designed to research,
-      analyze, create and automate tasks.
+    <div class="agent-card">
+
+      <div class="agent-title">
+        🔎 Research Agent
+      </div>
+
+      <div class="agent-description">
+        Give the agent a task and let AI research,
+        analyze and structure the information for you.
+      </div>
+
+      <textarea
+        id="task"
+        placeholder="Example: Find 10 solar panel manufacturers in Poland and compare their prices."
+      ></textarea>
+
+      <button class="button" onclick="runAgent()">
+        Run Research Agent
+      </button>
+
+      <div class="result" id="result">
+        Your research result will appear here.
+      </div>
+
     </div>
 
-    <a href="#" class="button">
-      Try Research Agent
-    </a>
-
-    <div class="agents">
-      Research • Marketing • Business • Creator • More
+    <div class="footer">
+      SYNAPSE AI • AI Agent Platform
     </div>
 
   </div>
+
+  <script>
+    function runAgent() {
+      const task = document.getElementById("task").value.trim();
+      const result = document.getElementById("result");
+
+      if (!task) {
+        result.style.display = "block";
+        result.innerText = "Please enter a research task.";
+        return;
+      }
+
+      result.style.display = "block";
+      result.innerText =
+        "Research Agent received your task. AI connection will be added next.";
+    }
+  </script>
 
 </body>
 </html>
