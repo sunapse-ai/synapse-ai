@@ -1,5 +1,5 @@
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     if (request.method !== "POST") {
       return new Response(
         JSON.stringify({ error: "Only POST requests are allowed" }),
@@ -24,27 +24,63 @@ export default {
         );
       }
 
+      const response = await fetch(
+        "https://api.openai.com/v1/responses",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${env.OPENAI_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "gpt-5.6-luna",
+            input: `You are SYNAPSE AI Research Agent.
+
+Analyze the user's research task and provide a useful, structured answer.
+
+User task:
+${task}`
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return new Response(
+          JSON.stringify({
+            error: "OpenAI API error",
+            details: data
+          }),
+          {
+            status: response.status,
+            headers: { "Content-Type": "application/json" }
+          }
+        );
+      }
+
       return new Response(
         JSON.stringify({
           success: true,
-          message: "SYNAPSE Research Agent received your task.",
-          task: task
+          answer: data.output_text || "No answer returned"
         }),
         {
           status: 200,
           headers: { "Content-Type": "application/json" }
         }
       );
-    } catch {
+
+    } catch (error) {
       return new Response(
-        JSON.stringify({ error: "Invalid request" }),
+        JSON.stringify({
+          error: "Server error",
+          details: error.message
+        }),
         {
-          status: 400,
+          status: 500,
           headers: { "Content-Type": "application/json" }
         }
       );
     }
   }
 };
-
-
