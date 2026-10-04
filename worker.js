@@ -1,11 +1,32 @@
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
+
 export default {
   async fetch(request, env) {
+
+    // CORS preflight
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        status: 204,
+        headers: corsHeaders
+      });
+    }
+
+    // Only POST
     if (request.method !== "POST") {
       return new Response(
-        JSON.stringify({ error: "Only POST requests are allowed" }),
+        JSON.stringify({
+          error: "Only POST requests are allowed"
+        }),
         {
           status: 405,
-          headers: { "Content-Type": "application/json" }
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders
+          }
         }
       );
     }
@@ -16,10 +37,15 @@ export default {
 
       if (!task) {
         return new Response(
-          JSON.stringify({ error: "Task is required" }),
+          JSON.stringify({
+            error: "Task is required"
+          }),
           {
             status: 400,
-            headers: { "Content-Type": "application/json" }
+            headers: {
+              "Content-Type": "application/json",
+              ...corsHeaders
+            }
           }
         );
       }
@@ -54,7 +80,10 @@ ${task}`
           }),
           {
             status: response.status,
-            headers: { "Content-Type": "application/json" }
+            headers: {
+              "Content-Type": "application/json",
+              ...corsHeaders
+            }
           }
         );
       }
@@ -66,7 +95,10 @@ ${task}`
         }),
         {
           status: 200,
-          headers: { "Content-Type": "application/json" }
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders
+          }
         }
       );
 
@@ -78,7 +110,10 @@ ${task}`
         }),
         {
           status: 500,
-          headers: { "Content-Type": "application/json" }
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders
+          }
         }
       );
     }
