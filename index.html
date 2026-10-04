@@ -184,20 +184,48 @@
   </div>
 
   <script>
-    function runAgent() {
-      const task = document.getElementById("task").value.trim();
-      const result = document.getElementById("result");
+  async function runAgent() {
+  const task = document.getElementById("task").value.trim();
+  const result = document.getElementById("result");
 
-      if (!task) {
-        result.style.display = "block";
-        result.innerText = "Please enter a research task.";
-        return;
+  if (!task) {
+    result.style.display = "block";
+    result.innerText = "Please enter a research task.";
+    return;
+  }
+
+  result.style.display = "block";
+  result.innerText = "SYNAPSE AI is researching...";
+
+  try {
+    const response = await fetch(
+      "https://synapse-api.dmytrocr1-408.workers.dev",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          task: task
+        })
       }
+    );
 
-      result.style.display = "block";
+    const data = await response.json();
+
+    if (!response.ok) {
       result.innerText =
-        "Research Agent received your task. AI connection will be added next.";
+        "Error: " + (data.error || "Something went wrong.");
+      return;
     }
+
+    result.innerText = data.answer || "No answer received.";
+
+  } catch (error) {
+    result.innerText =
+      "Connection error. Please try again.";
+  }
+}
   </script>
 
 </body>
