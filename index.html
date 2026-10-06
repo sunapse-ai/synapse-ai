@@ -1,121 +1,224 @@
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type"
-};
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-export default {
-  async fetch(request, env) {
+  <title>SYNAPSE AI</title>
 
-    // CORS preflight
-    if (request.method === "OPTIONS") {
-      return new Response(null, {
-        status: 204,
-        headers: corsHeaders
-      });
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    // Only POST
-    if (request.method !== "POST") {
-      return new Response(
-        JSON.stringify({
-          error: "Only POST requests are allowed"
-        }),
-        {
-          status: 405,
-          headers: {
-            "Content-Type": "application/json",
-            ...corsHeaders
-          }
-        }
-      );
+    body {
+      background: #0E111A;
+      color: white;
+      font-family: Inter, Arial, sans-serif;
+      min-height: 100vh;
     }
 
-    try {
-      const body = await request.json();
-      const task = body.task;
+    header {
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, #7B2CFF, #2962FF, #00E6FF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+      margin-top: 10px;
+      color: #A1A7B3;
+      font-size: 16px;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 20px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      color: #A1A7B3;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .card {
+      background: #151A26;
+      border: 1px solid #252C3A;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .card h2 {
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #A1A7B3;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 130px;
+      background: #0E111A;
+      border: 1px solid #303849;
+      border-radius: 12px;
+      padding: 15px;
+      color: white;
+      font-size: 16px;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #7B2CFF;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #7B2CFF, #2962FF, #00E6FF);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    #result {
+      display: none;
+      margin-top: 25px;
+      padding: 20px;
+      background: #0E111A;
+      border: 1px solid #252C3A;
+      border-radius: 12px;
+      color: #E6E9EF;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #6F7787;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">SYNAPSE AI</div>
+    <div class="tagline">One platform. Infinite AI agents.</div>
+  </header>
+
+  <main>
+
+    <section class="hero">
+      <h1>AI Agents for Real Work</h1>
+      <p>
+        Research, analyze and automate tasks with intelligent AI agents.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Research Agent</h2>
+
+      <p>
+        Give SYNAPSE AI a research task and let the AI analyze it.
+      </p>
+
+      <textarea
+        id="task"
+        placeholder="Example: Find 10 solar panel manufacturers in Poland and compare them."
+      ></textarea>
+
+      <button onclick="runAgent()">
+        Run Research Agent
+      </button>
+
+      <div id="result"></div>
+    </section>
+
+  </main>
+
+  <footer>
+    SYNAPSE AI © 2026
+  </footer>
+
+  <script>
+    async function runAgent() {
+      const task = document.getElementById("task").value.trim();
+      const result = document.getElementById("result");
 
       if (!task) {
-        return new Response(
-          JSON.stringify({
-            error: "Task is required"
-          }),
-          {
-            status: 400,
-            headers: {
-              "Content-Type": "application/json",
-              ...corsHeaders
-            }
-          }
-        );
+        result.style.display = "block";
+        result.innerText = "Please enter a research task.";
+        return;
       }
 
-      const response = await fetch(
-        "https://api.openai.com/v1/responses",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${env.OPENAI_API_KEY}`
-          },
-          body: JSON.stringify({
-            model: "gpt-5.6-luna",
-            input: `You are SYNAPSE AI Research Agent.
+      result.style.display = "block";
+      result.innerText = "SYNAPSE AI is researching...";
 
-Analyze the user's research task and provide a useful, structured answer.
-
-User task:
-${task}`
-          })
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return new Response(
-          JSON.stringify({
-            error: "OpenAI API error",
-            details: data
-          }),
+      try {
+        const response = await fetch(
+          "https://synapse-api.dmytrocr1-408.workers.dev",
           {
-            status: response.status,
+            method: "POST",
             headers: {
-              "Content-Type": "application/json",
-              ...corsHeaders
-            }
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              task: task
+            })
           }
         );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          result.innerText =
+            "Error: " + (data.error || "Something went wrong.");
+          return;
+        }
+
+        result.innerText = data.answer || "No answer received.";
+
+      } catch (error) {
+        result.innerText =
+          "Connection error. Please try again.";
       }
-
-      return new Response(
-        JSON.stringify({
-          success: true,
-          answer: data.output_text || "No answer returned"
-        }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-            ...corsHeaders
-          }
-        }
-      );
-
-    } catch (error) {
-      return new Response(
-        JSON.stringify({
-          error: "Server error",
-          details: error.message
-        }),
-        {
-          status: 500,
-          headers: {
-            "Content-Type": "application/json",
-            ...corsHeaders
-          }
-        }
-      );
     }
-  }
-};
+  </script>
+
+</body>
+</html>
