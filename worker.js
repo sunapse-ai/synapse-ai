@@ -59,7 +59,7 @@ export default {
             "Authorization": `Bearer ${env.OPENAI_API_KEY}`
           },
           body: JSON.stringify({
-            model: "gpt-5.6-luna",
+            model: "gpt-6-luna",
             input: `You are SYNAPSE AI Research Agent.
 
 Analyze the user's research task and provide a useful, structured answer.
