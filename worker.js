@@ -76,7 +76,7 @@ ${task}`
         return new Response(
           JSON.stringify({
             error: "OpenAI API error",
-            details: data
+            details: data.error || data
           }),
           {
             status: response.status,
