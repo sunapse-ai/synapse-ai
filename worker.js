@@ -73,20 +73,20 @@ ${task}`
       const data = await response.json();
 
       if (!response.ok) {
-        return new Response(
-          JSON.stringify({
-            error: data.error?.message || "OpenAI API error"
-            details: data.error || data
-          }),
-          {
-            status: response.status,
-            headers: {
-              "Content-Type": "application/json",
-              ...corsHeaders
-            }
-          }
-        );
+  return new Response(
+    JSON.stringify({
+      error: data.error?.message || "OpenAI API error",
+      details: data.error || data
+    }),
+    {
+      status: response.status,
+      headers: {
+        "Content-Type": "application/json",
+        ...corsHeaders
       }
+    }
+  );
+}
 
       return new Response(
         JSON.stringify({
